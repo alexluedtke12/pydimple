@@ -193,6 +193,10 @@ print('expected squared density estimate:',est2)
 
 As another example, the following will estimate the expected density 10 times, based on 10 Monte Carlo replicates:
 ```python
+import dimple
+# in case a previous call to dimple.estimate was interrupted, clear the computation graph
+dimple.Graph().clear()
+
 for i in range(10):
     # clear the computation graph
     dimple.Graph().clear()
@@ -200,7 +204,7 @@ for i in range(10):
     dat = sim_data_beta(1000)
     # run same estimation code from earlier code block
     P = dimple.Distribution(data=dat)
-    dens = dimple.Density(P, 'Y')
+    dens = dimple.Density(P, 'Z')
     expected_density = dimple.E(P,dens)
     est = dimple.estimate(expected_density)
     # print estimation results
