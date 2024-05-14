@@ -180,7 +180,7 @@ dimple.Graph().clear()
 P = dimple.Distribution(data=dat)
 dens = dimple.Density(P, 'Z')
 expected_sq_density = dimple.E(P,dens**2)
-est2 = dimple.estimate(expected_density) 
+est2 = dimple.estimate(expected_sq_density) 
 
 print('expected density estimate:',est1)
 # Example Output: {'est': 1.682, 'se': 0.034, 'ci': array([1.617, 1.748])}
