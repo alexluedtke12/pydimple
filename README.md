@@ -1,6 +1,6 @@
 # dimple: a proof of concept implementation
 
-Proof-of-concept package implementing dimple ('debiased inference made simple') from "Simplifying Debiased Inference via Automatic Differentiation and Probabilistic Programming" [[link]([https://LINK_TO_BE_ADDED](https://arxiv.org/abs/2405.08675))]
+Proof-of-concept package implementing dimple ('debiased inference made simple') from "Simplifying Debiased Inference via Automatic Differentiation and Probabilistic Programming" [[link](https://arxiv.org/abs/2405.08675)]
 
 ## Installation
 
