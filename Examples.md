@@ -18,26 +18,26 @@ dat = sim_data_beta(1000)
 ```
 The following code estimates the expected density:
 ```python
-import dimple
+import pydimple
 # clear the computation graph (see Example 4)
-dimple.Graph().clear()
+pydimple.Graph().clear()
 
 # define a distribution and a pandas DataFrame containing iid draws
-P = dimple.Distribution(data=dat)
+P = pydimple.Distribution(data=dat)
 
 # define a density
-dens = dimple.Density(P, 'Z')
+dens = pydimple.Density(P, 'Z')
 # take the mean of the density applied to a random draw from P
-expected_density = dimple.E(P,dens)
+expected_density = pydimple.E(P,dens)
 
 # estimate the expected density and compute 95% confidence interval
-dimple.estimate(expected_density) 
+pydimple.estimate(expected_density) 
 # Example Output:  {'est': 1.699, 'se': 0.035, 'ci': [1.631, 1.768]}
 ```
 
 ## Example 2: Nonparametric $R^2$
 
-This example estimates the nonparametric $R^2$ criterion $1-\int \{y-E_P(Y\mid X=x)\}^2 dP(x,y)/\mathrm{Var}_P(Y)$, where $P$ is a distribution of $(X,Y)$ ([Williamson et al., 2021](https://doi.org/10.1111/biom.13392)).
+This example estimates the nonparametric $R^2$ criterion $1-\int [y-E_P(Y\mid X=x)]^2 dP(x,y)/\mathrm{Var}_P(Y)$, where $P$ is a distribution of $(X,Y)$ ([Williamson et al., 2021](https://doi.org/10.1111/biom.13392)).
 
 We'll use the following simulated data:
 ```python
@@ -60,23 +60,23 @@ dat = sim_data_R2(500)
 ```
 The following code estimates the nonparametric $R^2$ criterion:
 ```python
-import dimple
+import pydimple
 # clear the computation graph (see Example 4)
-dimple.Graph().clear()
+pydimple.Graph().clear()
 
 # define a distribution and a pandas DataFrame containing iid draws
-P = dimple.Distribution(data=dat) 
+P = pydimple.Distribution(data=dat) 
 
 # variance of Y
-v = dimple.Var(P,'Y')
+v = pydimple.Var(P,'Y')
 # conditinal mean of Y given (X1,X2)
-mu = dimple.E(P,'Y',indep_vars=['X1','X2'])
+mu = pydimple.E(P,'Y',indep_vars=['X1','X2'])
 # R2 parameter
-# dimple.RV('Y') denotes a function that takes as input (X1,X2,Y) and returns Y.
-R2 = 1-dimple.E(P,(dimple.RV('Y')-mu)**2)/v
+# pydimple.RV('Y') denotes a function that takes as input (X1,X2,Y) and returns Y.
+R2 = 1-pydimple.E(P,(pydimple.RV('Y')-mu)**2)/v
 
  # estimate R2 and compute 95% confidence interval
-dimple.estimate(R2)
+pydimple.estimate(R2)
 # Example Output:  {'est': 0.4334, 'se': 0.0206, 'ci': [0.3930, 0.4738]}
 ```
 
@@ -114,52 +114,52 @@ dat = sim_data_longitudinal(1000)
 ```
 The following code estimates the longitudinal G-formula parameter:
 ```python
-import dimple
+import pydimple
 # clear the computation graph (see Example 4)
-dimple.Graph().clear()
+pydimple.Graph().clear()
 
 # define a distribution and a pandas DataFrame containing iid draws
-P = dimple.Distribution(data=dat) 
+P = pydimple.Distribution(data=dat) 
 
 # number of time points
 T = 3
-# dimple interprets this string as a function that takes as input H_T and returns Y
+# pydimple interprets this string as a function that takes as input H_T and returns Y
 mu = 'Y'
 # recursive definition of longitudinal G-formulat parameter
 for t in reversed(range(T)):
     # names of variables in H_t: ['X0','X1',...,'Xt','A0','A1',...,f'A{t-1}']
     H = [f'X{j}' for j in range(t+1)]+[f'A{j}' for j in range(t)]
     # define mu_{P,t}
-    mu = dimple.E(P,dep=mu,indep_vars=H, fixed_vars={f'A{t}==1'})
+    mu = pydimple.E(P,dep=mu,indep_vars=H, fixed_vars={f'A{t}==1'})
 # longitudinal G-formula parameter
-mu = dimple.E(P,dep=mu)
+mu = pydimple.E(P,dep=mu)
 
  # estimate longitudinal G-formula and compute 95% confidence interval
-dimple.estimate(mu)
+pydimple.estimate(mu)
 # Example Output:  {'est': 0.5313, 'se': 0.0304, 'ci': [0.4717, 0.5908]}
 ```
 
 
-## Example 4: calling ```dimple.estimate``` more than once
+## Example 4: calling ```pydimple.estimate``` more than once
 
 ### Caution: clearing the computation graph
-The computation graph is automatically reset at the end of a call to ```dimple.estimate```. This has several consequences:
-1. **Redefining old Nodes and defining new Nodes:** Before you run ```dimple.estimate``` again, you should redefine all the dimple Nodes (Distributions, Densities, Expectations, etc.) needed to express your parameter. Not doing so may lead to errors or unexpected results.
-2. **Handling interruptions:** If an execution of ```dimple.estimate``` is interrupted (e.g., manually stopped or due to an error), the graph is not automatically cleared. This can lead to unintended consequences if previous graph states persist into subsequent operations. Therefore, if an interruption occurs, you should explicitly clear the computation graph to prevent any carryover of state:
+The computation graph is automatically reset at the end of a call to ```pydimple.estimate```. This has several consequences:
+1. **Redefining old Nodes and defining new Nodes:** Before you run ```pydimple.estimate``` again, you should redefine all the pydimple Nodes (Distributions, Densities, Expectations, etc.) needed to express your parameter. Not doing so may lead to errors or unexpected results.
+2. **Handling interruptions:** If an execution of ```pydimple.estimate``` is interrupted (e.g., manually stopped or due to an error), the graph is not automatically cleared. This can lead to unintended consequences if previous graph states persist into subsequent operations. Therefore, if an interruption occurs, you should explicitly clear the computation graph to prevent any carryover of state:
 ```python
 # clear the computation graph
-dimple.Graph().clear()
+pydimple.Graph().clear()
 ```
-3. **Best practice:** To avoid complications from lingering graph states, it's recommended to manually clear the graph before defining your parameter and calling ```dimple.estimate```.
+3. **Best practice:** To avoid complications from lingering graph states, it's recommended to manually clear the graph before defining your parameter and calling ```pydimple.estimate```.
 
 
 ### Estimating two different parameters
 For example, the following code first estimates the expected marginal density $E_P[q(Y)]$ and then estimates the expected squared regression $E_P[E_P(Y|X)^2]$.
 ```python
-import dimple
+import pydimple
 
-# in case a previous call to dimple.estimate was interrupted, clear the computation graph
-dimple.Graph().clear()
+# in case a previous call to pydimple.estimate was interrupted, clear the computation graph
+pydimple.Graph().clear()
 
 # simulate data as in Example 1:
 def sim_data_beta(n):
@@ -167,20 +167,20 @@ def sim_data_beta(n):
 dat = sim_data_beta(1000)
 
 # run same estimation code from Example 1
-P = dimple.Distribution(data=dat)
-dens = dimple.Density(P, 'Z')
-expected_density = dimple.E(P,dens)
-est1 = dimple.estimate(expected_density) 
+P = pydimple.Distribution(data=dat)
+dens = pydimple.Density(P, 'Z')
+expected_density = pydimple.E(P,dens)
+est1 = pydimple.estimate(expected_density) 
 
 # clear the computation graph
-dimple.Graph().clear()
+pydimple.Graph().clear()
 
 # estimate the expected squared density
-# must redefine all dimple Nodes, including P, since the graph has been cleared!
-P = dimple.Distribution(data=dat)
-dens = dimple.Density(P, 'Z')
-expected_sq_density = dimple.E(P,dens**2)
-est2 = dimple.estimate(expected_sq_density) 
+# must redefine all pydimple Nodes, including P, since the graph has been cleared!
+P = pydimple.Distribution(data=dat)
+dens = pydimple.Density(P, 'Z')
+expected_sq_density = pydimple.E(P,dens**2)
+est2 = pydimple.estimate(expected_sq_density) 
 
 print('expected density estimate:',est1)
 # Example Output: {'est': 1.682, 'se': 0.034, 'ci': array([1.617, 1.748])}
@@ -189,24 +189,24 @@ print('expected squared density estimate:',est2)
 # Example Output: {'est': 3.111, 'se': 0.144, 'ci': array([2.828 , 3.393])}
 ```
 
-### Using dimple in a Monte Carlo simulation
+### Using pydimple in a Monte Carlo simulation
 
 As another example, the following will estimate the expected density 10 times, based on 10 Monte Carlo replicates:
 ```python
-import dimple
-# in case a previous call to dimple.estimate was interrupted, clear the computation graph
-dimple.Graph().clear()
+import pydimple
+# in case a previous call to pydimple.estimate was interrupted, clear the computation graph
+pydimple.Graph().clear()
 
 for i in range(10):
     # clear the computation graph
-    dimple.Graph().clear()
+    pydimple.Graph().clear()
     # generate new data
     dat = sim_data_beta(1000)
     # run same estimation code from earlier code block
-    P = dimple.Distribution(data=dat)
-    dens = dimple.Density(P, 'Z')
-    expected_density = dimple.E(P,dens)
-    est = dimple.estimate(expected_density)
+    P = pydimple.Distribution(data=dat)
+    dens = pydimple.Density(P, 'Z')
+    expected_density = pydimple.E(P,dens)
+    est = pydimple.estimate(expected_density)
     # print estimation results
     print(f'estimation output on iteration{i}:',est)
 ```
