@@ -1,6 +1,6 @@
-# dimple: a proof of concept implementation
+# pydimple
 
-Proof-of-concept package implementing dimple ('debiased inference made simple') from "Simplifying Debiased Inference via Automatic Differentiation and Probabilistic Programming" [[link](https://arxiv.org/abs/2405.08675)]
+Proof-of-concept package implementing dimple ('debiased inference made simple') from "Simplifying debiased inference via automatic differentiation and probabilistic programming" [[link](https://arxiv.org/abs/2405.08675)]
 
 ## Installation
 
@@ -13,7 +13,7 @@ pip install pydimple
 Once installed, it can be imported in Python via:
 
 ```Python
-import dimple
+import pydimple
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ For examples, please refer to the [Examples.md](Examples.md) file.
 
 ## Acknowledgement
 
-Much of dimple's core automatic differentiation code is from the excellent [Medium tutorial](https://towardsdatascience.com/build-your-own-automatic-differentiation-program-6ecd585eec2a) by [Jonathan Kernes](https://jmkernes.github.io/). Thank you, Jonathan, for letting me use it!
+Much of pydimple's core automatic differentiation code is from the excellent [Medium tutorial](https://towardsdatascience.com/build-your-own-automatic-differentiation-program-6ecd585eec2a) by [Jonathan Kernes](https://jmkernes.github.io/). Thank you, Jonathan, for letting me use it!
 
 ## Contributing
 
