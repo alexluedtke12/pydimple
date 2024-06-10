@@ -21,7 +21,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../pydimple'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
