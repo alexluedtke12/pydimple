@@ -25,15 +25,11 @@ def to_set(inp: Optional[List[Any]]) -> Set[Any]:
     """
     Convert a list or set to a set.
 
-    INPUTS:
-        inp (Optional[List[Any]]): Input data that can be a list, set, or None.
-
-    OUTPUT:
-        Set[Any]: A set containing the elements from the input list or set.
-                 If the input is None, an empty set is returned.
-
-    Raises
-        TypeError: If the input is not a list, set, or None.
+    :param inp: Input data that can be a list, set, or None.
+    :type inp: Optional[List[Any]]
+    :return: A set containing the elements from the input list or set. If the input is None, an empty set is returned.
+    :rtype: Set[Any]
+    :raises TypeError: If the input is not a list, set, or None.
     """
     if inp is None:
         return set()
@@ -46,7 +42,9 @@ def to_set(inp: Optional[List[Any]]) -> Set[Any]:
 
 
 class Singleton(type):
-    """ Singleton Metaclass """
+    """
+    Singleton Metaclass.
+    """
     _instances = {}
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
@@ -55,10 +53,13 @@ class Singleton(type):
 
 
 class Graph(metaclass=Singleton):
-    """ Computational graph. Consists of a set of Operators, Constants, and Distributions.
-        INPUTS:
-        num_folds: number of folds to use in cross-fitting
-        simplify: a boolean indicating whether to use sympy to try to symbolically evaluate when a random variable is known to be zero based on the conditioning set
+    """
+    Computational graph. Consists of a set of Operators, Constants, and Distributions.
+
+    :param num_folds: Number of folds to use in cross-fitting. Defaults to 5.
+    :type num_folds: int
+    :param simplify: A boolean indicating whether to use sympy to try to symbolically evaluate when a random variable is known to be zero based on the conditioning set. Defaults to True.
+    :type simplify: bool
     """
     def __init__(self,num_folds=5,simplify=True): # Right now I'm communicating num_folds and simplify via the Graph class, so that they essentially serve as globals. E.g., I can access them via Graph().num_folds. But this isn't great practice, and I should probably instead pass them via the estimate function. Will do this later. Similarly for simplify.
         self.version = 0 # used to keep track of how many times clear() has been called (and ensure that Nodes from an old version of the Graph can't be used after clear is called)
@@ -108,12 +109,15 @@ class Node:
 
 ### Distribution ###
 class Distribution(Node):
-    """A data-generating distribution node in the computational graph. This
-    holds estimates of any needed features of the distribution (conditional means, densities, etc.)
-    INPUTS:
-        data: a DataFrame consisting of iid draws from the distribution
-        name: defaults to "Dist/"+count
-        dtype: the type that the node holds, float, int, etc.
+    """
+    A data-generating distribution node in the computational graph. This holds estimates of any needed features of the distribution (conditional means, densities, etc.).
+
+    :param data: A DataFrame consisting of iid draws from the distribution.
+    :type data: pd.DataFrame
+    :param name: Name of the distribution. Defaults to "Dist/"+count.
+    :type name: str, optional
+    :param dtype: The type that the node holds, float, int, etc. Defaults to float.
+    :type dtype: type, optional
     """
     count = 0
     def __init__(self, data, name=None, dtype=float):
@@ -158,15 +162,15 @@ class Distribution(Node):
 
 class Constant(Node):
     """
-    INPUTS:
-        value: The value to assign to the constant. This value is immutable once set.
-        name: An optional name for the constant. If not provided, a unique name is generated.
+    Represents a constant value in the computational graph.
 
-    OUTPUT:
-        A new instance of Constant with the specified value and name.
-
-    Raises:
-        ValueError: When attempting to modify the value of the constant after it is set.
+    :param value: The value to assign to the constant. This value is immutable once set.
+    :type value: Any
+    :param name: An optional name for the constant. If not provided, a unique name is generated.
+    :type name: str, optional
+    :return: A new instance of Constant with the specified value and name.
+    :rtype: Constant
+    :raises ValueError: When attempting to modify the value of the constant after it is set.
     """
     count = 0
     def __init__(self, value, name=None):
@@ -196,6 +200,14 @@ class Constant(Node):
 
 
 class Operator(Node):
+    """
+    An operator node in the computational graph.
+
+    :param args: The input nodes to the operator.
+    :type args: Node
+    :param name: The name of the operator. Defaults to "Operator".
+    :type name: str, optional
+    """
     def __init__(self, *args, name='Operator'):
         super().__init__()
         Graph().operators.add(self)
@@ -225,13 +237,17 @@ class PointwiseFunction:
     """
     Represents a function that applies a mathematical operation pointwise.
 
-    Attributes:
-    - func (callable): A function.
-    - unknown_vars (bool): A boolean indicating whether the variables the function relies on are known. If this is true, then the var_names argument is ignored.
-    - var_names (set or list): A set or list of strings indicating the names of the variables the function relies on. Only used if unknown_vars is False. If a list is passed, it is converted to a set.
+    :param func: A function.
+    :type func: callable
+    :param unknown_vars: A boolean indicating whether the variables the function relies on are known. If this is true, then the var_names argument is ignored.
+    :type unknown_vars: bool
+    :param var_names: A set or list of strings indicating the names of the variables the function relies on. Only used if unknown_vars is False. If a list is passed, it is converted to a set.
+    :type var_names: set or list
+    :param zero_if: Condition under which the function is a priori known to evaluate to zero.
+    :type zero_if: str or sympy.Expr, optional
 
     Example:
-        f = PointwiseFunction(lambda x: x ** 2, unknown_vars=False, var_names=["x"])
+        >>> f = PointwiseFunction(lambda x: x ** 2, unknown_vars=False, var_names=["x"])
     """
     def __init__(self, func, unknown_vars=True, var_names=None, zero_if = None):
         self.func = func
@@ -367,17 +383,22 @@ class L2(PointwiseFunction):
     Represents an L2 function, which is a subclass of PointwiseFunction
     with an associated Distribution object to represent the L2 space.
 
-    Attributes:
-    - func (callable or PointwiseFunction): A function or PointwiseFunction.
-    - P (Distribution): A Distribution object representing the L2 space.
-    - unknown_vars (bool): A boolean indicating whether the variables the function relies on are known. If this is true, then the var_names argument is ignored. If `func` is a PointwiseFunction or L2, their `unknown_vars` values are used instead.
-    - var_names (set or list): A set or list of strings indicating the names of the variables the function relies on. Only used if unknown_vars is False. If a list is passed, it is converted to a set. If `func` is a PointwiseFunction or L2, their `var_names` values are used instead.
+    :param func: A function or PointwiseFunction.
+    :type func: callable or PointwiseFunction
+    :param P: A Distribution object representing the L2 space.
+    :type P: Distribution
+    :param unknown_vars: A boolean indicating whether the variables the function relies on are known. If this is true, then the var_names argument is ignored. If `func` is a PointwiseFunction or L2, their `unknown_vars` values are used instead.
+    :type unknown_vars: bool, optional
+    :param var_names: A set or list of strings indicating the names of the variables the function relies on. Only used if unknown_vars is False. If a list is passed, it is converted to a set. If `func` is a PointwiseFunction or L2, their `var_names` values are used instead.
+    :type var_names: set or list, optional
+    :param zero_if: Condition under which the function is a priori known to evaluate to zero.
+    :type zero_if: str or sympy.Expr, optional
 
     If `func` is already of type `L2`, the resulting `L2` object will inherit its `func` and `P` attributes. The value of `P` can be updated by providing a new value in the `P` argument of the constructor, overriding the previous value.
 
     Example:
-        f = L2(lambda x: x ** 2, P=P) # P is an existing Distribution object
-        g = L2(f, P=Q)  # g inherits the func and var_names from f, but updates the value of P to an existing Distribution object Q
+        >>> f = L2(lambda x: x ** 2, P=P)  # P is an existing Distribution object
+        >>> g = L2(f, P=Q)  # g inherits the func and var_names from f, but updates the value of P to an existing Distribution object Q
     """
     def __init__(self, func, P, unknown_vars=True, var_names=None, zero_if=None):
         if isinstance(func, L2) or isinstance(func, PointwiseFunction):
@@ -393,16 +414,14 @@ class L2(PointwiseFunction):
 
 def create_design_matrix(df, independent_vars):
     """
-    This function creates a matrix of independent variables 
-    from a pandas DataFrame.
+    Creates a matrix of independent variables from a pandas DataFrame.
     
-    Parameters:
-    - df (pd.DataFrame): A pandas DataFrame containing the data.
-    - independent_vars (str or list of str, optional): A string, or a list of strings, 
-      representing expressions for the independent variables.
-
-    Returns: 
-    - A pandas DataFrame that contains the independent variables.
+    :param df: A pandas DataFrame containing the data.
+    :type df: pd.DataFrame
+    :param independent_vars: A string, or a list of strings, representing expressions for the independent variables. If None, returns None.
+    :type independent_vars: str or list of str or None, optional
+    :return: A pandas DataFrame that contains the independent variables, or None if independent_vars is None.
+    :rtype: pd.DataFrame or None
     """
     if independent_vars is None:
         return None
@@ -416,6 +435,16 @@ def create_design_matrix(df, independent_vars):
 
 
 class add(Operator):
+    """
+    Addition operator node.
+
+    :param a: The first input node.
+    :type a: Node
+    :param b: The second input node.
+    :type b: Node
+    :param name: The name of the addition operator. Defaults to 'add/{add.count}'.
+    :type name: str, optional
+    """
     count = 0
     def __init__(self, a, b, name=None):
         name = f'add/{add.count}' if name is None else name
@@ -429,6 +458,16 @@ class add(Operator):
         return adj, adj
     
 class subtract(Operator):
+    """
+    Subtraction operator node.
+
+    :param a: The first input node.
+    :type a: Node
+    :param b: The second input node.
+    :type b: Node
+    :param name: The name of the subtraction operator. Defaults to 'sub/{subtract.count}'.
+    :type name: str, optional
+    """
     count = 0
     def __init__(self, a, b, name=None):
         name = f'sub/{subtract.count}' if name is None else name
@@ -442,6 +481,16 @@ class subtract(Operator):
         return adj, -adj
 
 class multiply(Operator):
+    """
+    Multiplication operator node.
+
+    :param a: The first input node.
+    :type a: Node
+    :param b: The second input node.
+    :type b: Node
+    :param name: The name of the multiplication operator. Defaults to 'mul/{multiply.count}'.
+    :type name: str, optional
+    """
     count = 0
     def __init__(self, a, b, name=None):
         name = f'mul/{multiply.count}' if name is None else name
@@ -455,6 +504,16 @@ class multiply(Operator):
         return b*adj, a*adj
     
 class divide(Operator):
+    """
+    Division operator node.
+
+    :param a: The first input node (numerator).
+    :type a: Node
+    :param b: The second input node (denominator).
+    :type b: Node
+    :param name: The name of the division operator. Defaults to 'div/{divide.count}'.
+    :type name: str, optional
+    """
     count = 0
     def __init__(self, a, b, name=None):
         name = f'div/{divide.count}' if name is None else name
@@ -468,6 +527,16 @@ class divide(Operator):
         return adj/b, -adj*a/(b**2)
     
 class power(Operator):
+    """
+    Power operator node.
+
+    :param a: The first input node (base).
+    :type a: Node
+    :param b: The second input node (exponent).
+    :type b: Node
+    :param name: The name of the power operator. Defaults to 'pow/{power.count}'.
+    :type name: str, optional
+    """
     count = 0
     def __init__(self, a, b, name=None):
         name = f'pow/{power.count}' if name is None else name
@@ -490,6 +559,14 @@ class power(Operator):
         return adj*b*(a**(b-1)), out2
     
 class log(Operator): # natural logarithm
+    """
+    Natural logarithm operator node.
+
+    :param a: The input node.
+    :type a: Node
+    :param name: The name of the logarithm operator. Defaults to 'log/{log.count}'.
+    :type name: str, optional
+    """
     count = 0
     def __init__(self, a, name=None):
         name = f'log/{log.count}' if name is None else name
@@ -505,6 +582,19 @@ class log(Operator): # natural logarithm
 
 
 def binary_operation(func, self, other):
+    """
+    Performs a binary operation between a node and another object.
+
+    :param func: The binary operation function to apply.
+    :type func: callable
+    :param self: The node on which the binary operation is performed.
+    :type self: Node
+    :param other: The other object involved in the binary operation.
+    :type other: Node, float, int, or PointwiseFunction
+    :return: The result of applying the binary operation.
+    :rtype: Node
+    :raises TypeError: If the type of `other` is not supported for the binary operation.
+    """
     if isinstance(other, Node): # if both self and other are nodes, then can apply the function
         return func(self, other)
     if isinstance(other, float) or isinstance(other, int) or isinstance(other, PointwiseFunction): # if other isn't a node, then introduce a constant into the graph and then apply the function
@@ -512,6 +602,19 @@ def binary_operation(func, self, other):
     raise TypeError(f"Cannot apply {func.__name__} to a node and an object of type {type(other).__name__}.")
 
 def reverse_binary_operation(func, self, other):
+    """
+    Performs a binary operation between a node and another object, with the operands reversed.
+
+    :param func: The binary operation function to apply.
+    :type func: callable
+    :param self: The node on which the binary operation is performed.
+    :type self: Node
+    :param other: The other object involved in the binary operation.
+    :type other: Node, float, int, or PointwiseFunction
+    :return: The result of applying the binary operation with the operands reversed.
+    :rtype: Node
+    :raises TypeError: If the type of `other` is not supported for the binary operation.
+    """
     # same as binary_operation except the order of the operands is reversed
     if isinstance(other, Node):
         return func(other, self)  # reverse the order of operands
@@ -547,16 +650,29 @@ def fit_lightgbm_model(X_train,
     Fit a LightGBM model to the given data, optionally using a custom objective function and a custom evaluation function.
 
     :param X_train: Feature training data.
+    :type X_train: pandas.DataFrame
     :param y_train: Target training data.
+    :type y_train: pandas.Series or numpy.ndarray
     :param X_val: Feature validation data.
+    :type X_val: pandas.DataFrame
     :param y_val: Target validation data.
+    :type y_val: pandas.Series or numpy.ndarray
     :param objective: Objective for LightGBM model, default is "regression".
+    :type objective: str, optional
     :param metric: Metric for LightGBM model, default is "rmse".
+    :type metric: str, optional
     :param custom_obj: Optional custom objective function for training.
+    :type custom_obj: callable, optional
     :param custom_eval: Optional custom evaluation function for validation.
+    :type custom_eval: callable, optional
     :param weights_train: Optional instance weights for training data.
+    :type weights_train: pandas.Series or numpy.ndarray, optional
     :param weights_val: Optional instance weights for validation data.
+    :type weights_val: pandas.Series or numpy.ndarray, optional
+    :param alpha: Optional alpha parameter for the objective function.
+    :type alpha: float, optional
     :return: Trained LightGBM Booster object.
+    :rtype: lightgbm.Booster
     """
     # Define base parameters
     params = {
@@ -594,8 +710,17 @@ def fit_lightgbm_model(X_train,
 ############################################ 
 # TO DO/CAUTION: need to implement this for embeddings from L^2(Q_X) into L^2(P_X)? Or will all objects by default be lifted to L^2(Q)/L^2(P) by other primitives
 class embed(Operator):
+    """
+    Embed an element f of L^2(Q) into L^2(P).
+
+    :param f: The function to be embedded, an element of L^2(Q).
+    :type f: L2
+    :param P: The distribution representing the target L^2 space.
+    :type P: Distribution
+    :param name: The name of the embedding operator. Defaults to 'embed/{embed.count}'.
+    :type name: str, optional
+    """
     count = 0
-    """Embed an element f of L^2(Q) into L^2(P)."""
     def __init__(self, f, P, name=None):
         name = f'embed/{embed.count}' if name is None else name
         super().__init__(f, name=name)
@@ -669,14 +794,14 @@ def add_unique_column(df, new_col_name, new_col_values):
     If the proposed new column name already exists in the DataFrame, 
     this function will append a number to it to make it unique.
 
-    INPUTS:
-    df (pandas.DataFrame): The DataFrame to add the new column to.
-    new_col_name (str): The proposed name of the new column.
-    new_col_values (list): The values for the new column.
-
-    OUTPUT:
-    df (pandas.DataFrame): The DataFrame with the new column added.
-    new_col_name (str): The actual name of the new column.
+    :param df: The DataFrame to add the new column to.
+    :type df: pandas.DataFrame
+    :param new_col_name: The proposed name of the new column.
+    :type new_col_name: str
+    :param new_col_values: The values for the new column.
+    :type new_col_values: list or numpy.ndarray or pandas.Series
+    :return: A tuple containing the modified DataFrame and the actual name of the new column.
+    :rtype: tuple
     """
 
     original_col_name = new_col_name
@@ -696,17 +821,25 @@ def add_unique_column(df, new_col_name, new_col_values):
 
 def convert_to_sympy(condition):
     """
-    This function takes a condition as a string, 
-    splits it into left and right parts based on the operator, 
-    and then returns a corresponding sympy equation or inequality.
+    Convert a string condition to a sympy equation or inequality.
+
+    This function takes a condition as a string, splits it into left and right parts
+    based on the operator, and then returns a corresponding sympy equation or inequality.
 
     If no operator is found in the condition, it treats the condition as an expression.
 
-    INPUTS:
-    condition (str): a string representing an equation or inequality
+    :param condition: A string representing an equation or inequality.
+    :type condition: str
+    :return: A sympy equation or inequality representing the input condition.
+    :rtype: sympy.Eq or sympy.Relational or sympy.Expr
 
-    OUTPUT:
-    a sympy equation or inequality representing the input condition
+    Example:
+        >>> convert_to_sympy("x == 5")
+        Eq(x, 5)
+        >>> convert_to_sympy("x > 5")
+        x > 5
+        >>> convert_to_sympy("x + y")
+        x + y
     """
     
     # Dictionary to map string operator to its corresponding sympy function
@@ -728,15 +861,21 @@ def convert_to_sympy(condition):
 
 
 def implicit_lift(fold,adj,P,which_vars):
-    """ implicitly lifts a primitive from L^2(P_X) to L^2(P), which P_X the marginal distribution of a subvector X of Z~P
-        INPUTS:
-        fold: curent fold in backward pass
-        adj: adj supplied in backward pass
-        P: distribution supplied in backward pass
-        which_vars: indices of variables in X
-        OUTPUT:
-        adj_proj: an estimate of E[adj(Z)|X]. When the adj supplied to a primitive is replaced by adj_proj,
-            the output of that primitive is implicitly lifted to L^2(P)
+    """
+    Implicitly lift a primitive from L^2(P_X) to L^2(P), where P_X is the marginal distribution
+    of a subvector X of Z~P.
+
+    :param fold: Current fold in the backward pass.
+    :type fold: int
+    :param adj: Adjoint value supplied in the backward pass.
+    :type adj: PointwiseFunction or float
+    :param P: Distribution supplied in the backward pass.
+    :type P: Distribution
+    :param which_vars: Indices or names of variables in X.
+    :type which_vars: list or set
+    :return: An estimate of E[adj(Z)|X]. When the adj supplied to a primitive is replaced by adj_proj,
+             the output of that primitive is implicitly lifted to L^2(P).
+    :rtype: PointwiseFunction
     """
     fold_name = 'fold_'+str(fold)
     train_inds, val_inds = P['splits'][fold]['train_inds'], P['splits'][fold]['val_inds']
@@ -753,23 +892,42 @@ def implicit_lift(fold,adj,P,which_vars):
 
 def RV(rv_str):
     """
-    INPUTS:
-    rv_str: a string containing the name of a random variable
-    OUTPUT
-    a Pointwise function that takes as input a dataframe and outputs the column with name specified by rv_str"""
+    Create a PointwiseFunction that extracts a random variable from a DataFrame.
+
+    :param rv_str: The name of the random variable (column) to extract.
+    :type rv_str: str
+    :return: A PointwiseFunction that takes a DataFrame as input and returns the column
+             specified by `rv_str`.
+    :rtype: PointwiseFunction
+
+    Example:
+        >>> df = pd.DataFrame({'X': [1, 2, 3], 'Y': [4, 5, 6]})
+        >>> X = RV('X')
+        >>> X(df)
+        0    1
+        1    2
+        2    3
+        Name: X, dtype: int64
+    """
     return PointwiseFunction(lambda df: df[rv_str], unknown_vars=False, var_names=[rv_str])
 
 class E(Operator):
-    count = 0
-    """Marginal or conditional mean of draws from a univariate distribution.
-    INPUTS:
-    P: a distribution
-    dep: either a string containing the name of a column in the dataset in P, or a Node/PointwiseFunction
-    indep_vars: variables to regress against
-    fixed_vars: a set of conditions expressed as strings. 
-                e.g., {'A1==1', 'A2==A1', 'A3*A2<A1+A4'}. 
-                The conditions should be valid Python expressions and should only involve columns present in P['data']
     """
+    Marginal or conditional mean of draws from a univariate distribution.
+
+    :param P: A distribution.
+    :type P: Distribution
+    :param dep: Either a string containing the name of a column in the dataset in P, or a Node/PointwiseFunction.
+    :type dep: str or Node or PointwiseFunction
+    :param indep_vars: Variables to regress against.
+    :type indep_vars: list of str or None, optional
+    :param fixed_vars: A set of conditions expressed as strings. e.g., {'A1==1', 'A2==A1', 'A3*A2<A1+A4'}.
+                       The conditions should be valid Python expressions and should only involve columns present in P['data'].
+    :type fixed_vars: set of str or None, optional
+    :param name: The name of the operator. Defaults to 'E/{E.count}'.
+    :type name: str, optional
+    """
+    count = 0
     def __init__(self, P, dep, indep_vars=None, fixed_vars=None, name=None):
         name = f'E/{E.count}' if name is None else name
         if isinstance(dep, str):
@@ -925,9 +1083,21 @@ class E(Operator):
         return adj_ipw*residual, adj_ipw
 
 
-def Var(P, dep, indep_vars=None, fixed_vars=None):
-    """Marginal or conditional variance operator, defined as a wrapper for E
-    TO DO: implement this as an Operator rather than as a wrapper
+def Var(P, dep, indep_vars=None, fixed_vars=None): # TO DO: implement this as an Operator rather than as a wrapper
+    """
+    Marginal or conditional variance operator, defined as a wrapper for E.
+
+    :param P: A distribution.
+    :type P: Distribution
+    :param dep: Either a string containing the name of a column in the dataset in P, or a Node/PointwiseFunction.
+    :type dep: str or Node or PointwiseFunction
+    :param indep_vars: Variables to regress against.
+    :type indep_vars: list of str or None, optional
+    :param fixed_vars: A set of conditions expressed as strings. e.g., {'A1==1', 'A2==A1', 'A3*A2<A1+A4'}.
+                       The conditions should be valid Python expressions and should only involve columns present in P['data'].
+    :type fixed_vars: set of str or None, optional
+    :return: The marginal or conditional variance.
+    :rtype: Operator
     """
     if isinstance(dep,str):
         dep_str = dep
@@ -938,16 +1108,25 @@ def Var(P, dep, indep_vars=None, fixed_vars=None):
 
 
 class Density(Operator):
-    """Marginal or conditional density function of a real-valued dependent variable.
-    INPUTS:
-    P: a distribution
-    dep_vars: depenendent variables
-    indep_vars: indepenendent variables
-    indep_type: either None or a string the length of indep_vars, with the string specifying a type for each variable (c : Continuous, u : Unordered, o : Ordered). E.g., indep_type='ccuo'. If not provided, the type is assumed to be continuous
-    fixed_vars: a set of conditions expressed as strings. 
-                e.g., {'A1==1', 'A2==A1', 'A3*A2<A1+A4'}. 
-                The conditions should be valid Python expressions and should only involve columns present in P['data']
-    verbose: returns warnings if True
+    """
+    Marginal or conditional density function of a real-valued dependent variable.
+
+    :param P: A distribution.
+    :type P: Distribution
+    :param dep_vars: Dependent variables.
+    :type dep_vars: list of str
+    :param indep_vars: Independent variables.
+    :type indep_vars: list of str or None, optional
+    :param indep_type: Either None or a string the length of indep_vars, with the string specifying a type for each variable
+                       (c: Continuous, u: Unordered, o: Ordered). E.g., indep_type='ccuo'. If not provided, the type is assumed to be continuous.
+    :type indep_type: str or None, optional
+    :param fixed_vars: A set of conditions expressed as strings. e.g., {'A1==1', 'A2==A1', 'A3*A2<A1+A4'}.
+                       The conditions should be valid Python expressions and should only involve columns present in P['data'].
+    :type fixed_vars: set of str or None, optional
+    :param name: The name of the operator. Defaults to 'density/{Density.count}'.
+    :type name: str, optional
+    :param verbose: Returns warnings if True.
+    :type verbose: bool, optional
     """
     count = 0
     def __init__(self, P, dep_vars, indep_vars=None, indep_type=None, name=None, verbose=True):
@@ -1026,6 +1205,14 @@ class Density(Operator):
 
 
 def topological_sort(estimand):
+    """
+    Perform a topological sort on the nodes in the computational graph.
+
+    :param estimand: The node to start the topological sort from.
+    :type estimand: Node
+    :return: A topologically sorted list of nodes in the computational graph.
+    :rtype: list of Node
+    """
     # depth-first search to produce a topological ordering of the nodes
     already_visited = set()
     order = [] # will be updated to contain the topological ordering
@@ -1046,13 +1233,17 @@ def topological_sort(estimand):
 
 
 def forward_pass(order, fold):
-    """ Constructs an initial estimate
-    INPUTS:
-        order: a topologically sorted array of nodes
-        fold: an integer specifying the fold to use for estimating nuisances
-    OUTPUT:
-        initial estimate. all nodes in the graph updated to reflect the estimates from the forward pass
     """
+    Construct an initial estimate by performing a forward pass on the topologically sorted nodes.
+
+    :param order: A topologically sorted list of nodes in the computational graph.
+    :type order: list of Node
+    :param fold: An integer specifying the fold to use for estimating nuisances.
+    :type fold: int
+    :return: The initial estimate obtained from the forward pass.
+    :rtype: Any
+    """
+
     for node in order:
         if isinstance(node, Operator):
             if node.requires_fold:
@@ -1064,11 +1255,17 @@ def forward_pass(order, fold):
     
  
 def backward_pass(order, fold, init=1):
-    """ Compute the efficient influence operator in the backward pass
-    INPUTS:
-        same as forward pass
-    OUTPUT:
-        None, but adjoint information in nodes is updated
+    """
+    Compute the efficient influence operator by performing a backward pass on the topologically sorted nodes.
+
+    :param order: A topologically sorted list of nodes in the computational graph.
+    :type order: list of Node
+    :param fold: An integer specifying the fold to use for estimating nuisances.
+    :type fold: int
+    :param init: The initial value for the adjoint of the last node in the order. Defaults to 1.
+    :type init: Any, optional
+    :return: None, but the adjoint information in nodes is updated.
+    :rtype: None
     """
     alread_visited = set()
     order[-1].adjoint = init
@@ -1094,16 +1291,23 @@ def backward_pass(order, fold, init=1):
 #############    Estimate the specified node  ############
 ##########################################################
 def estimate(estimand,level=0.95,ci_type='wald',num_boot=2000):
-    """ Estimate the specified node
-    INPUTS:
-        estimand: the node whose value is to be estimated
-        level: the nominal level of the reported confidence interval
-        ci_type: one of 'bca', 'percentile_boot', 'wald'
-        num_boot: number of bootstrap replicates to use to compute standard error. Ignored of ci_type is 'wald'
-    OUTPUT:
-        estimate of the node and corresponding standard error estimate
-    CAUTION:
-        this function automatically clears the computation graph after being called!
+    """
+    Estimate the value of the specified node and compute a confidence interval.
+
+    :param estimand: The node whose value is to be estimated.
+    :type estimand: Node
+    :param level: The nominal level of the reported confidence interval. Defaults to 0.95.
+    :type level: float, optional
+    :param ci_type: The type of confidence interval to compute. One of 'bca', 'percentile_boot', or 'wald'. Defaults to 'wald'.
+    :type ci_type: str, optional
+    :param num_boot: The number of bootstrap replicates to use to compute the standard error. Ignored if ci_type is 'wald'. Defaults to 2000.
+    :type num_boot: int, optional
+    :return: A dictionary containing the estimate of the node ('est'), the standard error estimate ('se'), and the confidence interval ('ci').
+    :rtype: dict
+    :raises ValueError: If an invalid ci_type is provided.
+    
+    .. caution::
+       This function automatically clears the computation graph after being called!
     """
 
     order = topological_sort(estimand)
