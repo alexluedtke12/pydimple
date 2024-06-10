@@ -7,58 +7,56 @@ Welcome to pydimple's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   funs
-
-.. autoclass:: funs.Graph
+.. autoclass:: pydimple.funs.Graph
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: funs.Distribution
+.. autoclass:: pydimple.funs.Distribution
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: funs.Constant
+.. autoclass:: pydimple.funs.Constant
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: funs.Operator
+.. autoclass:: pydimple.funs.Operator
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: funs.PointwiseFunction
+.. autoclass:: pydimple.funs.PointwiseFunction
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: funs.L2
+.. autoclass:: pydimple.funs.L2
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autoclass:: funs.embed
+.. autoclass:: pydimple.funs.embed
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autofunction:: funs.RV
+.. autofunction:: pydimple.funs.RV
 
-.. autoclass:: funs.E
+.. autoclass:: pydimple.funs.E
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autofunction:: funs.Var
+.. autofunction:: pydimple.funs.Var
 
-.. autoclass:: funs.Density
+.. autoclass:: pydimple.funs.Density
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. autofunction:: funs.estimate
+.. autofunction:: pydimple.funs.estimate
 
 Indices and tables
 ==================
