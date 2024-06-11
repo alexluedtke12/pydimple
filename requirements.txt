@@ -6,3 +6,4 @@ lightgbm==3.3.5
 scikit-learn>=1.2.2
 sympy>=1.12
 statsmodels>=0.14.1
+m2r>=0.3.1
