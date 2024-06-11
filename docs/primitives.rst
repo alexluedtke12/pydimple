@@ -25,25 +25,10 @@ Primitives that depend on underlying distribution
 Pointwise operations
 ------------------------------------
 
-.. automethod:: Node.__add__
-
-.. automethod:: Node.__radd__
-
-.. automethod:: Node.__sub__
-
-.. automethod:: Node.__mul__
-
-.. automethod:: Node.__rmul__
-
-.. automethod:: Node.__truediv__
-
-.. automethod:: Node.__rtruediv__
-
-.. automethod:: Node.__neg__
-
-.. automethod:: Node.__pow__
-
-.. automethod:: Node.__rpow__
+.. autoclass:: pydimple.Node
+   :members: __add__, __radd__, __sub__, __mul__, __rmul__, __truediv__, __rtruediv__, __neg__, __pow__, __rpow__
+   :undoc-members:
+   :show-inheritance:
 
 
 Other primitives
