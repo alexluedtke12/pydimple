@@ -622,18 +622,43 @@ def reverse_binary_operation(func, self, other):
         return func(Constant(other), self)  # reverse the order of operands
     raise TypeError(f"Cannot apply {func.__name__} to an object of type {type(other).__name__} and a node.")
     
+def generate_binary_operation_doc(return_desc):
+    return f"""
+    :param self: First argument to binary operation
+    :type self: Node
+    :param other: Second argument to binary operation
+    :type other:  Node, float, int, or PointwiseFunction
+    :return: {return_desc}  (pointwise operation)
+    :rtype: Node
+    """
+
 Node.__add__ = lambda self, other: binary_operation(add, self, other)
-Node.__add__.__doc__ = add.__doc__
+Node.__add__.__doc__ = generate_binary_operation_doc("self+other")
 Node.__radd__ = lambda self, other: reverse_binary_operation(add, self, other)
+Node.__radd__.__doc__ = generate_binary_operation_doc("other+self")
 Node.__sub__ = lambda self, other: binary_operation(subtract, self, other)
+Node.__sub__.__doc__ = generate_binary_operation_doc("self-other")
 Node.__rsub__ = lambda self, other: reverse_binary_operation(subtract, self, other)
+Node.__rsub__.__doc__ = generate_binary_operation_doc("other-self")
 Node.__mul__ = lambda self, other: binary_operation(multiply, self, other)
+Node.__mul__.__doc__ = generate_binary_operation_doc("self*other")
 Node.__rmul__ = lambda self, other: reverse_binary_operation(multiply, self, other)
+Node.__rmul__.__doc__ = generate_binary_operation_doc("other*self")
 Node.__truediv__ = lambda self, other: binary_operation(divide, self, other)
+Node.__truediv__.__doc__ = generate_binary_operation_doc("self/other")
 Node.__rtruediv__ = lambda self, other: reverse_binary_operation(divide, self, other)
-Node.__neg__ = lambda self: binary_operation(multiply, self, Constant(-1))
+Node.__rtruediv__.__doc__ = generate_binary_operation_doc("other/self")
 Node.__pow__ = lambda self, other: binary_operation(power, self, other)
+Node.__pow__.__doc__ = generate_binary_operation_doc("self**other")
 Node.__rpow__ = lambda self, other: reverse_binary_operation(power, self, other)
+Node.__rpow__.__doc__ = generate_binary_operation_doc("other**self")
+Node.__neg__ = lambda self: binary_operation(multiply, self, Constant(-1))
+Node.__neg__.__doc__ = """
+    :param self: Node to negate
+    :type self: Node
+    :return: -self  (pointwise operation)
+    :rtype: Node
+    """
 
 
 def fit_lightgbm_model(X_train, 
