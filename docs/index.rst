@@ -9,42 +9,10 @@ pydimple
    :maxdepth: 2
    :caption: Contents:
 
-.. autoclass:: pydimple.Distribution
-   :show-inheritance:
-
-.. autoclass:: pydimple.E
-   :show-inheritance:
-
-.. autofunction:: pydimple.Var
-
-.. autoclass:: pydimple.Density
-   :show-inheritance:
-
-.. autofunction:: pydimple.estimate
-
-.. autoclass:: pydimple.Graph
-   :show-inheritance:
-
-.. autoclass:: pydimple.Constant
-   :show-inheritance:
-
-.. autoclass:: pydimple.Operator
-   :show-inheritance:
-
-.. autoclass:: pydimple.PointwiseFunction
-   :show-inheritance:
-
-.. autoclass:: pydimple.L2
-   :show-inheritance:
-
-.. autoclass:: pydimple.embed
-   :show-inheritance:
-
-.. autofunction:: pydimple.RV
-
-Indices and tables
-==================
+   Examples.md  # Link to Examples.md
+   primitives (Primitives)
+   estimation (Estimation)
+    core_classes (Core Classes)
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
