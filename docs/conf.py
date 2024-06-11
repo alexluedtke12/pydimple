@@ -40,4 +40,4 @@ source_suffix = {
     '.md': 'markdown',
 }
 
-myst_enable_extensions = ["amsmath"]
+myst_enable_extensions = ["amsmath", "dollarmath"]
