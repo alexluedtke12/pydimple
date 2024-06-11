@@ -32,3 +32,13 @@ html_static_path = ['_static']
 # -- Mock imports -------------------------------------------------------------
 # Mock the import of 'funs' module
 autodoc_mock_imports = ['funs']
+
+# -- Parse Markdown -------------------------------------------------------------
+extensions = [
+    'myst_parser'
+]
+
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
+}
