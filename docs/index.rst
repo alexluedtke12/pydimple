@@ -7,7 +7,7 @@ pydimple
    :maxdepth: 2
    :caption: Contents:
 
-   Examples <examples.rst>
+   Examples <Examples.md>
    Primitives <primitives.rst>
    Estimation <estimation.rst>
    Core Classes <core_classes.rst>
