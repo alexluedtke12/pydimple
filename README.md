@@ -18,7 +18,7 @@ import pydimple
 
 ## Usage
 
-For examples and documentation, please refer to pydimple's [readthedocs](https://pydimple.readthedocs.io/en/latest/) page.
+For examples and documentation, please refer to pydimple's [readthedocs](https://pydimple.readthedocs.io/en/latest/index.html) page.
 
 ## Acknowledgement
 
