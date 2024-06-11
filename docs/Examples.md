@@ -35,7 +35,7 @@ pydimple.estimate(expected_density)
 # Example Output:  {'est': 1.699, 'se': 0.035, 'ci': [1.631, 1.768]}
 ```
 
-## Example 2: Nonparametric $R^2$
+## Example 2: nonparametric $R^2$
 
 This example estimates the nonparametric $R^2$ criterion $1-\int [y-E_P(Y\mid X=x)]^2 dP(x,y)/\mathrm{Var}_P(Y)$, where $P$ is a distribution of $(X,Y)$ ([Williamson et al., 2021](https://doi.org/10.1111/biom.13392)).
 
