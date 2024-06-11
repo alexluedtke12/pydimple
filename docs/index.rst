@@ -8,9 +8,9 @@ pydimple
    :caption: Contents:
 
    Examples.md  # Link to Examples.md
-   primitives (Primitives)
-   estimation (Estimation)
-   core_classes (Core Classes)
+   primitives.rst (Primitives)
+   estimation.rst (Estimation)
+   core_classes.rst (Core Classes)
 
 * :ref:`genindex`
 * :ref:`search`
