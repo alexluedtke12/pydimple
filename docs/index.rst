@@ -7,10 +7,10 @@ pydimple
    :maxdepth: 2
    :caption: Contents:
 
-   examples.rst (Examples)
-   primitives.rst (Primitives)
-   estimation.rst (Estimation)
-   core_classes.rst (Core Classes)
+   Examples <examples.rst>
+   Primitives <primitives.rst>
+   Estimation <estimation.rst>
+   Core Classes <core_classes.rst>
 
 * :ref:`genindex`
 * :ref:`search`
