@@ -623,6 +623,7 @@ def reverse_binary_operation(func, self, other):
     raise TypeError(f"Cannot apply {func.__name__} to an object of type {type(other).__name__} and a node.")
     
 Node.__add__ = lambda self, other: binary_operation(add, self, other)
+Node.__add__.__doc__ = add.__doc__
 Node.__radd__ = lambda self, other: reverse_binary_operation(add, self, other)
 Node.__sub__ = lambda self, other: binary_operation(subtract, self, other)
 Node.__rsub__ = lambda self, other: reverse_binary_operation(subtract, self, other)
