@@ -14,7 +14,7 @@ release = 'v0.1'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc','m2r']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -33,10 +33,7 @@ html_static_path = ['_static']
 # Mock the import of 'funs' module
 autodoc_mock_imports = ['funs']
 
-# -- Parse Markdown -------------------------------------------------------------
-extensions = [
-    'myst_parser'
-]
+# -- Parse Markdown with m2r -------------------------------------------------------------
 
 source_suffix = {
     '.rst': 'restructuredtext',
