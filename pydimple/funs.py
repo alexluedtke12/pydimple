@@ -656,7 +656,7 @@ Node.__neg__ = lambda self: binary_operation(multiply, self, Constant(-1))
 Node.__neg__.__doc__ = """
     :param self: Node to negate
     :type self: Node
-    :return: -self  (pointwise operation)
+    :return: -{"self"}  (pointwise operation)
     :rtype: Node
     """
 
@@ -745,6 +745,8 @@ class embed(Operator):
     :type P: Distribution
     :param name: The name of the embedding operator. Defaults to 'embed/{embed.count}'.
     :type name: str, optional
+    :return: The embedding of f into L^2(P)
+    :rtype: L2
     """
     count = 0
     def __init__(self, f, P, name=None):
@@ -952,6 +954,8 @@ class E(Operator):
     :type fixed_vars: set of str or None, optional
     :param name: The name of the operator. Defaults to 'E/{E.count}'.
     :type name: str, optional
+    :return: A function mapping from the variables in indep_vars to the conditional mean of dep_vars given these variables. If fixed_vars is not None, also conditions on the conditions in fixed_vars being True
+    :rtype: L2
     """
     count = 0
     def __init__(self, P, dep, indep_vars=None, fixed_vars=None, name=None):
@@ -1153,6 +1157,9 @@ class Density(Operator):
     :type name: str, optional
     :param verbose: Returns warnings if True.
     :type verbose: bool, optional
+    :type name: str, optional
+    :return: A function mapping from the variables in indep_vars to the conditional density of dep_vars given these variables. If fixed_vars is not None, also conditions on the conditions in fixed_vars being True
+    :rtype: L2
     """
     count = 0
     def __init__(self, P, dep_vars, indep_vars=None, indep_type=None, name=None, verbose=True):
