@@ -1,4 +1,4 @@
 Examples
 ===========
 
-.. mdinclude:: Examples.md
+Examples.md
