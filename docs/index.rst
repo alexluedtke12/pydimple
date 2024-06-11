@@ -7,38 +7,38 @@ Welcome to pydimple's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. autoclass:: pydimple.funs.Distribution
+.. autoclass:: pydimple.Distribution
    :show-inheritance:
 
-.. autoclass:: pydimple.funs.E
+.. autoclass:: pydimple.E
    :show-inheritance:
 
-.. autofunction:: pydimple.funs.Var
+.. autofunction:: pydimple.Var
 
-.. autoclass:: pydimple.funs.Density
+.. autoclass:: pydimple.Density
    :show-inheritance:
 
-.. autofunction:: pydimple.funs.estimate
+.. autofunction:: pydimple.estimate
 
-.. autoclass:: pydimple.funs.Graph
+.. autoclass:: pydimple.Graph
    :show-inheritance:
 
-.. autoclass:: pydimple.funs.Constant
+.. autoclass:: pydimple.Constant
    :show-inheritance:
 
-.. autoclass:: pydimple.funs.Operator
+.. autoclass:: pydimple.Operator
    :show-inheritance:
 
-.. autoclass:: pydimple.funs.PointwiseFunction
+.. autoclass:: pydimple.PointwiseFunction
    :show-inheritance:
 
-.. autoclass:: pydimple.funs.L2
+.. autoclass:: pydimple.L2
    :show-inheritance:
 
-.. autoclass:: pydimple.funs.embed
+.. autoclass:: pydimple.embed
    :show-inheritance:
 
-.. autofunction:: pydimple.funs.RV
+.. autofunction:: pydimple.RV
 
 Indices and tables
 ==================
