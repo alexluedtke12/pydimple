@@ -1,7 +1,9 @@
 .. pydimple documentation master file
 
-Welcome to pydimple's documentation!
+pydimple
 ====================================
+
+.. include:: Examples.md
 
 .. toctree::
    :maxdepth: 2
