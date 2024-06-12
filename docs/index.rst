@@ -7,7 +7,6 @@ Proof-of-concept package implementing dimple ('debiased inference made simple') 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    Examples <Examples.md>
    Primitives <primitives.rst>

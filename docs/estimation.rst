@@ -5,7 +5,6 @@ Estimation
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
 .. autofunction:: pydimple.estimate
 
